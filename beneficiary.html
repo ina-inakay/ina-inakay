@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beneficiary Intake — Ina-Inakay Center Inc.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5EDE0; color: #1C1C1E; line-height: 1.6; padding: 0; margin: 0; }
+
+:root {
+  --navy:    #163659;
+  --navy-m:  #1E4A78;
+  --red:     #C85731;
+  --red-lt:  #F5E8E3;
+  --tan:     #E5C19B;
+  --tan-lt:  #F5EDE0;
+  --white:   #FFFFFF;
+  --ink:     #1C1C1E;
+  --ink2:    #3D3D3F;
+  --ink3:    #6B6B70;
+  --rule:    #DDD8CE;
+  --ok:      #22c55e;
+}
+
+.form-wrap { max-width: 780px; margin: 0 auto; padding: 40px 24px 60px; }
+
+/* ── HEADER ── */
+.form-header { text-align: center; margin-bottom: 36px; }
+.form-header-badge { display: inline-flex; align-items: center; gap: 7px; background: var(--red-lt); border: 1px solid rgba(200,87,49,0.25); padding: 6px 14px; border-radius: 20px; margin-bottom: 14px; }
+.form-header-badge span { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); font-weight: 600; }
+.form-title { font-family: 'Playfair Display', serif; font-size: clamp(24px,5vw,34px); color: var(--navy); margin-bottom: 8px; }
+.form-title em { font-style: italic; color: var(--red); }
+.form-sub { font-size: 13px; color: var(--ink3); font-weight: 300; max-width: 520px; margin: 0 auto 6px; line-height: 1.75; }
+.form-who { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.form-who-pill { background: var(--white); border: 1px solid var(--rule); padding: 5px 12px; font-size: 11px; color: var(--ink3); border-radius: 20px; }
+
+/* ── PROGRESS ── */
+.progress-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 36px; }
+.prog-step { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.prog-circle { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--rule); background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--ink3); transition: all .3s; position: relative; z-index: 1; }
+.prog-circle.active  { background: var(--navy); border-color: var(--navy); color: #fff; }
+.prog-circle.done    { background: var(--red); border-color: var(--red); color: #fff; }
+.prog-label { font-size: 10px; color: var(--ink3); text-align: center; max-width: 70px; line-height: 1.3; transition: color .3s; }
+.prog-label.active { color: var(--navy); font-weight: 600; }
+.prog-label.done   { color: var(--red); }
+.prog-line { flex: 1; height: 2px; background: var(--rule); min-width: 16px; max-width: 56px; margin-bottom: 22px; transition: background .3s; }
+.prog-line.done { background: var(--red); }
+
+/* ── CARD ── */
+.form-card { background: var(--white); border-radius: 8px; padding: 36px 40px; box-shadow: 0 2px 20px rgba(22,54,89,0.07); }
+@media (max-width: 600px) { .form-card { padding: 24px 20px; } }
+
+/* ── STEPS ── */
+.step { display: none; }
+.step.active { display: block; }
+.step-eyebrow { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); font-weight: 600; margin-bottom: 6px; }
+.step-title { font-family: 'Playfair Display', serif; font-size: clamp(20px,4vw,26px); color: var(--navy); margin-bottom: 4px; }
+.step-sub { font-size: 13px; color: var(--ink3); font-weight: 300; margin-bottom: 24px; }
+.step-divider { height: 1px; background: var(--rule); margin: 0 0 24px; }
+
+/* ── FIELDS ── */
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+@media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+.field-row.full { grid-template-columns: 1fr; }
+.field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 600px) { .field-row.three { grid-template-columns: 1fr; } }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--ink2); letter-spacing: 0.04em; }
+.field label .fil { font-size: 11px; color: var(--ink3); font-weight: 400; margin-left: 4px; }
+.field label .req { color: var(--red); margin-left: 2px; }
+.field input, .field select, .field textarea { border: 1.5px solid var(--rule); border-radius: 5px; padding: 10px 14px; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--ink); background: var(--white); outline: none; transition: border-color .2s; width: 100%; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--navy); }
+.field textarea { resize: vertical; min-height: 80px; }
+.field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B70' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.err-msg { font-size: 11px; color: var(--red); display: none; margin-top: 2px; }
+.field.has-error .err-msg { display: block; }
+.field.has-error input, .field.has-error select, .field.has-error textarea { border-color: var(--red); }
+
+/* ── CHILDREN TABLE ── */
+.children-table { width: 100%; margin: 10px 0; border-collapse: collapse; }
+.children-table th { font-size: 11px; font-weight: 600; color: var(--ink3); letter-spacing: 0.06em; padding: 7px 10px; background: var(--tan-lt); text-align: left; border-bottom: 1px solid var(--rule); }
+.children-table td { padding: 6px 4px; }
+.children-table td input { border: 1px solid var(--rule); border-radius: 3px; padding: 7px 10px; font-size: 13px; width: 100%; font-family: inherit; outline: none; transition: border-color .2s; }
+.children-table td input:focus { border-color: var(--navy); }
+.btn-add-row { background: transparent; border: 1.5px dashed var(--rule); color: var(--ink3); padding: 7px 14px; font-size: 12px; font-family: inherit; cursor: pointer; border-radius: 4px; margin-top: 6px; transition: all .2s; }
+.btn-add-row:hover { border-color: var(--navy); color: var(--navy); }
+.btn-rm-row { background: transparent; border: none; color: var(--red); font-size: 16px; cursor: pointer; padding: 2px 6px; line-height: 1; }
+
+/* ── CHECKBOXES ── */
+.check-group-label { font-size: 12px; font-weight: 600; color: var(--ink2); letter-spacing: 0.04em; margin-bottom: 10px; display: block; }
+.check-group-label .fil { font-size: 11px; color: var(--ink3); font-weight: 400; margin-left: 4px; }
+.check-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+@media (max-width: 600px) { .check-grid { grid-template-columns: repeat(2,1fr); } }
+.check-item { display: flex; align-items: flex-start; gap: 7px; cursor: pointer; }
+.check-item input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--navy); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.check-item span { font-size: 13px; color: var(--ink2); line-height: 1.3; }
+.check-item span .fil { font-size: 10px; color: var(--ink3); display: block; }
+.radio-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.radio-item { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.radio-item input[type="radio"] { width: 15px; height: 15px; accent-color: var(--navy); }
+.radio-item span { font-size: 13px; color: var(--ink2); }
+
+/* ── URGENCY CHIPS ── */
+.urgency-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.urgency-chip { display: none; }
+.urgency-chip + label { border: 1.5px solid var(--rule); border-radius: 20px; padding: 7px 16px; font-size: 13px; color: var(--ink3); cursor: pointer; transition: all .2s; }
+.urgency-chip:checked + label { border-color: var(--red); background: var(--red-lt); color: var(--red); font-weight: 500; }
+
+/* ── CONTEXT NOTE ── */
+.context-note { background: var(--tan-lt); border-left: 3px solid var(--tan); border-radius: 0 5px 5px 0; padding: 12px 14px; margin: 14px 0; }
+.context-note p { font-size: 12px; color: var(--ink3); line-height: 1.65; }
+
+/* ── REVIEW ── */
+.review-block { margin-bottom: 18px; }
+.review-block h4 { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--rule); }
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
+@media (max-width: 600px) { .review-grid { grid-template-columns: 1fr; } }
+.review-item .rl { font-size: 10px; color: var(--ink3); font-weight: 600; letter-spacing: 0.04em; margin-bottom: 1px; }
+.review-item .rv { font-size: 13px; color: var(--ink); }
+.review-item.span2 { grid-column: 1 / -1; }
+
+/* ── DECLARATION ── */
+.declaration { background: var(--tan-lt); border: 1.5px solid var(--rule); border-radius: 6px; padding: 16px 18px; margin: 18px 0; }
+.declaration label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+.declaration input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--navy); flex-shrink: 0; margin-top: 2px; }
+.declaration span { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap: 12px; }
+.btn-back { background: transparent; color: var(--ink3); border: 1.5px solid var(--rule); padding: 10px 22px; border-radius: 5px; font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all .2s; }
+.btn-back:hover { border-color: var(--navy); color: var(--navy); }
+.btn-next { background: var(--navy); color: #fff; border: none; padding: 11px 30px; border-radius: 5px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .2s; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%); }
+.btn-next:hover { background: var(--navy-m); }
+.btn-submit { background: var(--red); color: #fff; border: none; padding: 12px 32px; border-radius: 5px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .2s; clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%); }
+.btn-submit:hover { background: #a8461f; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── SUCCESS ── */
+.success-screen { display: none; }
+.success-icon { width: 60px; height: 60px; background: var(--ok); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+.success-icon svg { width: 26px; height: 26px; }
+.success-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--navy); margin-bottom: 10px; }
+.ref-badge { display: inline-block; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; padding: 7px 18px; border-radius: 3px; margin-bottom: 20px; font-family: monospace; }
+.btn-print { background: var(--red); color: #fff; border: none; padding: 11px 26px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; border-radius: 5px; transition: background .2s; }
+.btn-print:hover { background: #a8461f; }
+.btn-new { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); padding: 10px 24px; font-size: 13px; font-family: inherit; cursor: pointer; border-radius: 5px; transition: all .2s; margin-left: 8px; }
+.btn-new:hover { background: var(--navy); color: #fff; }
+
+/* ── PRINT ── */
+.printable { display: none; }
+@media print {
+  body { background: #fff; }
+  .form-wrap, .form-header, .progress-wrap, .form-card, .success-screen { display: none !important; }
+  .printable { display: block !important; }
+}
+.print-doc { font-family: 'Plus Jakarta Sans', sans-serif; max-width: 680px; margin: 0 auto; padding: 28px; color: #1C1C1E; font-size: 13px; }
+.print-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2.5px solid #163659; }
+.print-logo-block { display: flex; align-items: center; gap: 10px; }
+.print-logo-box { width: 48px; height: 48px; background: #163659; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-family: serif; font-size: 16px; }
+.print-org-name { font-size: 14px; font-weight: 700; color: #163659; }
+.print-org-tag { font-size: 10px; color: #6B6B70; }
+.print-form-title { font-size: 18px; font-weight: 700; color: #163659; text-transform: uppercase; letter-spacing: 0.06em; margin: 12px 0 2px; }
+.print-form-sub { font-size: 10px; color: #6B6B70; letter-spacing: 0.1em; text-transform: uppercase; }
+.print-ref-block { text-align: right; }
+.print-ref-num { font-size: 13px; font-weight: 700; color: #C85731; font-family: monospace; letter-spacing: 0.06em; }
+.print-ref-date { font-size: 11px; color: #6B6B70; }
+.print-urgency-badge { display: inline-block; background: #F5E8E3; border: 1px solid #C85731; color: #C85731; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; margin: 8px 0; }
+.print-section { margin: 14px 0; }
+.print-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #C85731; margin-bottom: 7px; padding-bottom: 4px; border-bottom: 1px solid #DDD8CE; }
+.print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 20px; }
+.print-field .pf-label { font-size: 9px; color: #6B6B70; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1px; }
+.print-field .pf-value { font-size: 12px; color: #1C1C1E; border-bottom: 1px solid #DDD8CE; padding-bottom: 3px; min-height: 20px; }
+.print-full { grid-column: 1 / -1; }
+.print-sig-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid #DDD8CE; }
+.print-sig-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 20px; }
+.print-sig-line { border-bottom: 1.5px solid #1C1C1E; height: 26px; margin-bottom: 4px; }
+.print-sig-label { font-size: 9px; color: #6B6B70; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.4; }
+.print-note { font-size: 9px; color: #6B6B70; margin-top: 16px; line-height: 1.6; border: 1px solid #DDD8CE; padding: 7px 9px; border-radius: 3px; }
+.print-footer-bar { margin-top: 20px; padding-top: 8px; border-top: 2px solid #163659; display: flex; justify-content: space-between; }
+.print-footer-bar span { font-size: 9px; color: #6B6B70; }
+.print-footer-bar em { font-size: 10px; color: #C85731; font-style: italic; }
+
+/* ── GITHUB PAGES NAV ── */
+.site-nav {
+  background: #163659; height: 60px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 999;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.site-nav-back {
+  display: flex; align-items: center; gap: 7px; color: rgba(255,255,255,0.55);
+  font-size: 13px; text-decoration: none; transition: color .2s; min-width: 120px;
+}
+.site-nav-back:hover { color: #fff; }
+.site-nav-brand { text-align: center; }
+.site-nav-name { font-size: 13px; font-weight: 600; color: #fff; display: block; }
+.site-nav-tag  { font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 0.1em; text-transform: uppercase; }
+.site-nav-right { min-width: 120px; text-align: right; }
+.site-nav-right a {
+  font-size: 12px; color: rgba(255,255,255,0.45); text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.18); padding: 6px 14px; border-radius: 3px; transition: all .2s;
+}
+.site-nav-right a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.site-footer {
+  background: #0a1628; color: rgba(255,255,255,0.3);
+  text-align: center; padding: 28px 20px; margin-top: 20px;
+}
+.site-footer p { font-size: 12px; margin-bottom: 5px; line-height: 1.7; }
+.site-footer a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color .2s; }
+.site-footer a:hover { color: #fff; }
+.site-footer-tag { font-family: 'Playfair Display',serif; font-style: italic; color: #C85731; opacity: 0.65; font-size: 13px; }
+@media (max-width: 600px) {
+  .site-nav { padding: 0 14px; }
+  .site-nav-back, .site-nav-right { min-width: 80px; }
+  .site-nav-name { font-size: 11px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <a class="site-nav-back" href="https://ina-inakay.com" target="_blank">
+    ← ina-inakay.com
+  </a>
+  <div class="site-nav-brand">
+    <span class="site-nav-name">Ina-Inakay Center Inc.</span>
+    <span class="site-nav-tag">where hope leads</span>
+  </div>
+  <div class="site-nav-right">
+    <a href="https://ina-inakay.com" target="_blank">Main Site</a>
+  </div>
+</nav>
+
+<!--
+  CONFIG — Update SUBMIT_EMAIL before going live.
+  Replace APPS_SCRIPT_URL with your Google Apps Script web app URL
+  to receive email notifications automatically.
+  Leave APPS_SCRIPT_URL as '' to use mailto: fallback.
+-->
+<script>
+const SUBMIT_EMAIL = 'inainakay.helpdesk@gmail.com';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygTl7ESSMcJ1NgglTwX2pn8y77TD8h4Nrl9BxXPHr0bLGHcgKQlpZemInv9uUX_r5gbg/exec';
+</script>
+
+<div class="form-wrap">
+
+  <!-- HEADER -->
+  <div class="form-header">
+    <div class="form-header-badge">
+      <span>Ina-Inakay Center Inc. — Official Referral</span>
+    </div>
+    <h1 class="form-title">Beneficiary <em>Intake Tool</em></h1>
+    <p class="form-sub">Para sa barangay officials, social workers, PCLL staff, at direktang aplikante. / For barangay officers, social workers, PCLL staff, and direct applicants.</p>
+    <div class="form-who">
+      <span class="form-who-pill">👤 Direct Applicant</span>
+      <span class="form-who-pill">🏛 Barangay Officer</span>
+      <span class="form-who-pill">👩‍⚕️ Social Worker</span>
+      <span class="form-who-pill">🌾 PCLL Staff</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="prog-step">
+      <div class="prog-circle active" id="pc1">1</div>
+      <div class="prog-label active" id="pl1">Household<br><span style="font-size:9px;font-weight:300;">Pamilya</span></div>
+    </div>
+    <div class="prog-line" id="ln1"></div>
+    <div class="prog-step">
+      <div class="prog-circle" id="pc2">2</div>
+      <div class="prog-label" id="pl2">Needs<br><span style="font-size:9px;font-weight:300;">Pangangailangan</span></div>
+    </div>
+    <div class="prog-line" id="ln2"></div>
+    <div class="prog-step">
+      <div class="prog-circle" id="pc3">3</div>
+      <div class="prog-label" id="pl3">Location<br><span style="font-size:9px;font-weight:300;">Lokasyon</span></div>
+    </div>
+    <div class="prog-line" id="ln3"></div>
+    <div class="prog-step">
+      <div class="prog-circle" id="pc4">4</div>
+      <div class="prog-label" id="pl4">Summary<br><span style="font-size:9px;font-weight:300;">Buod</span></div>
+    </div>
+  </div>
+
+  <div class="form-card" id="formCard">
+
+    <!-- STEP 1 — HOUSEHOLD INFO -->
+    <div class="step active" id="step1">
+      <div class="step-eyebrow">Step 1 of 4</div>
+      <h2 class="step-title">Household Information</h2>
+      <p class="step-sub">Impormasyon ng pamilyang pinaglilingkuran / Information about the household being referred</p>
+      <div class="step-divider"></div>
+
+      <div class="field-row">
+        <div class="field" id="f-bfname">
+          <label>Beneficiary First Name <span class="fil">(Unang Pangalan)</span><span class="req">*</span></label>
+          <input type="text" id="bfname" placeholder="First name / Unang pangalan">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+        <div class="field" id="f-blname">
+          <label>Beneficiary Last Name <span class="fil">(Apelyido)</span><span class="req">*</span></label>
+          <input type="text" id="blname" placeholder="Last name / Apelyido">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+      </div>
+
+      <div class="field-row three">
+        <div class="field">
+          <label>Age <span class="fil">(Edad)</span></label>
+          <input type="number" id="bage" min="1" max="120" placeholder="e.g. 35">
+        </div>
+        <div class="field">
+          <label>Gender <span class="fil">(Kasarian)</span></label>
+          <select id="bgender">
+            <option value="">Select / Pumili</option>
+            <option>Male / Lalaki</option>
+            <option>Female / Babae</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Civil Status <span class="fil">(Katayuang Sibil)</span></label>
+          <select id="bcivil">
+            <option value="">Select / Pumili</option>
+            <option>Single / Walang Asawa</option>
+            <option>Married / May Asawa</option>
+            <option>Separated / Hiwalay</option>
+            <option>Widowed / Biyudo/Biyuda</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Number of Children <span class="fil">(Bilang ng Anak)</span></label>
+          <input type="number" id="bchildcount" min="0" max="20" placeholder="0" oninput="updateChildrenTable(this.value)">
+        </div>
+        <div class="field">
+          <label>Relationship to Children <span class="fil">(Relasyon sa mga Bata)</span></label>
+          <select id="brelation">
+            <option value="">Select / Pumili</option>
+            <option>Mother / Ina</option>
+            <option>Father / Ama</option>
+            <option>Grandmother / Lola</option>
+            <option>Grandfather / Lolo</option>
+            <option>Aunt / Tiya</option>
+            <option>Uncle / Tito</option>
+            <option>Sibling / Kapatid</option>
+            <option>Guardian / Tagapag-alaga</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Dynamic children table -->
+      <div id="childrenSection" style="display:none;margin:8px 0 14px;">
+        <span class="check-group-label">Children's Names and Ages <span class="fil">(Pangalan at Edad ng mga Bata)</span></span>
+        <table class="children-table">
+          <thead><tr><th>#</th><th>Name / Pangalan</th><th>Age / Edad</th><th>Grade/Year Level</th><th></th></tr></thead>
+          <tbody id="childrenBody"></tbody>
+        </table>
+        <button type="button" class="btn-add-row" onclick="addChildRow()">+ Add Child / Dagdag na Bata</button>
+      </div>
+
+      <div class="step-divider"></div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>PDL Status <span class="fil">(Katayuan bilang PDL)</span><span class="req">*</span></label>
+          <select id="bpdl" required>
+            <option value="">Select / Pumili</option>
+            <option>Currently Incarcerated / Kasalukuyang Nakabilanggo</option>
+            <option>Released / Nakalaya na</option>
+            <option>On Parole / Nasa Parole</option>
+            <option>Child of PDL / Anak ng PDL</option>
+            <option>Guardian of PDL's Child / Tagapag-alaga ng Anak ng PDL</option>
+            <option>Community Member / Miyembro ng Komunidad</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Referral Source <span class="fil">(Pinagmulan ng Referral)</span></label>
+          <select id="bsource">
+            <option value="">Select / Pumili</option>
+            <option>Barangay Official / Opisyal ng Barangay</option>
+            <option>Church / Simbahan</option>
+            <option>Self-referred / Sariling Aplikasyon</option>
+            <option>PCLL Staff / Kawani ng PCLL</option>
+            <option>Social Worker / Social Worker</option>
+            <option>Other Organization / Ibang Organisasyon</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row full">
+        <div class="field">
+          <label>Referred By — Name & Position <span class="fil">(Sino ang Nag-refer — Pangalan at Posisyon)</span></label>
+          <input type="text" id="breferrer" placeholder="e.g. Hon. Juan dela Cruz, Barangay Councilor">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <span></span>
+        <button class="btn-next" onclick="nextStep(1)">Next / Susunod →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 — NEEDS ASSESSMENT -->
+    <div class="step" id="step2">
+      <div class="step-eyebrow">Step 2 of 4</div>
+      <h2 class="step-title">Needs Assessment</h2>
+      <p class="step-sub">Pag-aaral ng pangangailangan / What kind of help is needed?</p>
+      <div class="step-divider"></div>
+
+      <div style="margin-bottom:20px;">
+        <span class="check-group-label">Type of Need <span class="fil">(Uri ng Pangangailangan — Check all that apply / Piliin lahat ng angkop)</span><span class="req" style="color:var(--red);">*</span></span>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="needs" value="Education Support / Tulong sa Edukasyon"><span>Education Support<span class="fil">Tulong sa Edukasyon</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Livelihood Assistance / Pangkabuhayan"><span>Livelihood<span class="fil">Pangkabuhayan</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Food Relief / Pagkain"><span>Food Relief<span class="fil">Tulong sa Pagkain</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Water Access / Tubig"><span>Water Access<span class="fil">Pangangailangan sa Tubig</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Shelter / Tirahan"><span>Shelter<span class="fil">Tirahan</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Medical Assistance / Medikal"><span>Medical<span class="fil">Tulong Medikal</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Spiritual Support / Espirituwal"><span>Spiritual Support<span class="fil">Espirituwal</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Livelihood Crafts / Ii Craft"><span>Ii Craft Program<span class="fil">Paggawa ng Crafts</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Ground of Hope Housing"><span>Housing (Ground of Hope)<span class="fil">Pabahay</span></span></label>
+          <label class="check-item"><input type="checkbox" name="needs" value="Other / Iba pa"><span>Other<span class="fil">Iba pa</span></span></label>
+        </div>
+        <span class="err-msg" id="needs-err" style="font-size:11px;color:var(--red);display:none;margin-top:6px;">Please select at least one need / Pumili ng kahit isang pangangailangan</span>
+      </div>
+
+      <div class="field-row full">
+        <div class="field" id="f-bsituation">
+          <label>Brief Description of Situation <span class="fil">(Maikling Paglalarawan ng Sitwasyon)</span><span class="req">*</span></label>
+          <textarea id="bsituation" rows="4" placeholder="Describe the household situation, immediate concerns, and background... / Ilarawan ang sitwasyon, agarang pangangailangan, at background..."></textarea>
+          <span class="err-msg">Please describe the situation / Ilarawan ang sitwasyon</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <span class="check-group-label" style="margin-bottom:10px;display:block;">Level of Urgency <span class="fil">(Antas ng Pangangailangan)</span></span>
+        <div class="urgency-group">
+          <input class="urgency-chip" type="radio" name="urgency" id="u1" value="Immediate — Within 24–48 hours / Agarang Tulong">
+          <label for="u1">🔴 Immediate / Agaran</label>
+          <input class="urgency-chip" type="radio" name="urgency" id="u2" value="This Week / Sa Linggong Ito">
+          <label for="u2">🟡 This Week / Sa Linggong Ito</label>
+          <input class="urgency-chip" type="radio" name="urgency" id="u3" value="This Month / Sa Buwang Ito">
+          <label for="u3">🟢 This Month / Sa Buwang Ito</label>
+        </div>
+      </div>
+
+      <div class="context-note">
+        <p>All information submitted is treated with strict confidentiality and used solely to determine appropriate assistance. Lahat ng impormasyon ay pinananatiling kumpidensyal at gagamitin lamang para matukoy ang angkop na tulong.</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep(2)">← Back / Bumalik</button>
+        <button class="btn-next" onclick="nextStep(2)">Next / Susunod →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — LOCATION -->
+    <div class="step" id="step3">
+      <div class="step-eyebrow">Step 3 of 4</div>
+      <h2 class="step-title">Location & Contact</h2>
+      <p class="step-sub">Lokasyon at pakikipag-ugnayan / Where can we find and reach this household?</p>
+      <div class="step-divider"></div>
+
+      <div class="field-row">
+        <div class="field" id="f-bbarangay">
+          <label>Barangay<span class="req">*</span></label>
+          <input type="text" id="bbarangay" placeholder="e.g. Brgy. Sula">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+        <div class="field" id="f-bmuni">
+          <label>Municipality / City <span class="fil">(Bayan / Lungsod)</span><span class="req">*</span></label>
+          <input type="text" id="bmuni" placeholder="e.g. San Jose">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Province <span class="fil">(Lalawigan)</span></label>
+          <input type="text" id="bprovince" placeholder="e.g. Tarlac">
+        </div>
+        <div class="field">
+          <label>Region</label>
+          <select id="bregion">
+            <option value="">Select / Pumili</option>
+            <option>NCR — Metro Manila</option>
+            <option>Region III — Central Luzon</option>
+            <option>Region IV-A — CALABARZON</option>
+            <option>Other / Iba pa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row full">
+        <div class="field">
+          <label>Landmark / Directions <span class="fil">(Palatandaan / Direksyon)</span></label>
+          <textarea id="blandmark" placeholder="How to find this household... Near what landmark? / Paano mararating ang tahanan? Malapit saan?"></textarea>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Contact Number <span class="fil">(Numero ng Telepono)</span></label>
+          <input type="tel" id="bcontact" placeholder="+63 9XX XXX XXXX (if any / kung mayroon)">
+        </div>
+        <div class="field">
+          <label>Best Time to Visit <span class="fil">(Pinakamainam na Oras)</span></label>
+          <select id="bvisittime">
+            <option value="">Select / Pumili</option>
+            <option>Morning 7AM–12PM / Umaga</option>
+            <option>Afternoon 12PM–5PM / Hapon</option>
+            <option>Evening 5PM–7PM / Gabi</option>
+            <option>Anytime / Anumang Oras</option>
+            <option>Weekends Only / Katapusan ng Linggo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row full">
+        <div class="field">
+          <label>Additional Notes for PCLL Team <span class="fil">(Karagdagang Tala para sa Koponan)</span></label>
+          <textarea id="bnotes" placeholder="Any safety notes, access issues, or special considerations the PCLL team should know..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep(3)">← Back / Bumalik</button>
+        <button class="btn-next" onclick="nextStep(3)">Review / Suriin →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 — REVIEW + SUBMIT -->
+    <div class="step" id="step4">
+      <div class="step-eyebrow">Step 4 of 4</div>
+      <h2 class="step-title">Review Case Summary</h2>
+      <p class="step-sub">Suriin bago isumite / Review all information before submitting the referral</p>
+      <div class="step-divider"></div>
+
+      <div class="review-block">
+        <h4>Household Information / Pamilya</h4>
+        <div class="review-grid">
+          <div class="review-item"><div class="rl">Name / Pangalan</div><div class="rv" id="rv-bname">—</div></div>
+          <div class="review-item"><div class="rl">Age / Gender</div><div class="rv" id="rv-bage">—</div></div>
+          <div class="review-item"><div class="rl">PDL Status</div><div class="rv" id="rv-bpdl">—</div></div>
+          <div class="review-item"><div class="rl">No. of Children / Anak</div><div class="rv" id="rv-bchildren">—</div></div>
+          <div class="review-item"><div class="rl">Referred By / Nag-refer</div><div class="rv" id="rv-breferrer">—</div></div>
+          <div class="review-item"><div class="rl">Referral Source</div><div class="rv" id="rv-bsource">—</div></div>
+        </div>
+      </div>
+
+      <div class="review-block">
+        <h4>Needs Assessment / Pangangailangan</h4>
+        <div class="review-grid">
+          <div class="review-item span2"><div class="rl">Type of Need / Uri ng Tulong</div><div class="rv" id="rv-bneeds">—</div></div>
+          <div class="review-item span2"><div class="rl">Situation / Sitwasyon</div><div class="rv" id="rv-bsituation" style="white-space:pre-line;">—</div></div>
+          <div class="review-item"><div class="rl">Urgency / Apurado</div><div class="rv" id="rv-burgency">—</div></div>
+        </div>
+      </div>
+
+      <div class="review-block">
+        <h4>Location / Lokasyon</h4>
+        <div class="review-grid">
+          <div class="review-item"><div class="rl">Address</div><div class="rv" id="rv-baddress">—</div></div>
+          <div class="review-item"><div class="rl">Contact / Best Time</div><div class="rv" id="rv-bcontact">—</div></div>
+          <div class="review-item span2"><div class="rl">Landmark / Directions</div><div class="rv" id="rv-blandmark">—</div></div>
+        </div>
+      </div>
+
+      <div class="declaration">
+        <label>
+          <input type="checkbox" id="bdeclare">
+          <span>I certify that the information provided in this referral is accurate to the best of my knowledge. I understand this referral will be reviewed by the Ina-Inakay Center Inc. team.<br>
+          <span style="font-size:12px;color:var(--ink3);margin-top:4px;display:block;">Ninapatunayan ko na ang impormasyon sa referral na ito ay tama at totoo sa abot ng aking kaalaman. Naiintindihan ko na ito ay susuriin ng koponan ng Ina-Inakay Center Inc.</span></span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep(4)">← Edit / Baguhin</button>
+        <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>Submit Referral / Isumite ✓</button>
+      </div>
+    </div>
+
+  </div><!-- /form-card -->
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="form-card" style="text-align:center;padding:44px 28px;">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="success-title">Referral Submitted!</h2>
+      <p style="font-size:14px;color:var(--ink3);max-width:420px;margin:0 auto 20px;line-height:1.75;font-weight:300;">Salamat. The Ina-Inakay team will review this referral and respond within 3–5 working days. / Ang koponan ng Ina-Inakay ay susuriin ang referral na ito.</p>
+      <div class="ref-badge" id="refDisplay">IIC-BEN-XXXX-XXXX</div>
+      <div style="font-size:12px;color:var(--ink3);margin-bottom:24px;">Keep this reference number for follow-up. / Itago ang reference number para sa follow-up.</div>
+      <button class="btn-print" onclick="printOutput()">🖨 Print Case Summary</button>
+      <button class="btn-new" onclick="resetForm()">New Referral / Bagong Referral</button>
+    </div>
+  </div>
+
+</div><!-- /form-wrap -->
+
+<!-- PRINTABLE -->
+<div class="printable" id="printOutput">
+  <div class="print-doc">
+    <div class="print-header">
+      <div class="print-logo-block">
+        <div class="print-logo-box">II</div>
+        <div>
+          <div class="print-org-name">Ina-Inakay Center Inc.</div>
+          <div class="print-org-tag">Where Hope Leads &nbsp;·&nbsp; ina-inakay.com</div>
+        </div>
+      </div>
+      <div class="print-ref-block">
+        <div class="print-ref-num" id="p-ref">IIC-BEN-XXXX-XXXX</div>
+        <div class="print-ref-date" id="p-date">—</div>
+      </div>
+    </div>
+
+    <div class="print-form-title">Beneficiary Intake & Referral Form</div>
+    <div class="print-form-sub">Pormularyo ng Pagsasanggunian ng Benepisyaryo</div>
+    <div class="print-urgency-badge" id="p-urgency">—</div>
+
+    <div class="print-section">
+      <div class="print-section-title">Household Information / Impormasyon ng Pamilya</div>
+      <div class="print-grid">
+        <div class="print-field"><div class="pf-label">Full Name / Pangalan</div><div class="pf-value" id="pp-bname"></div></div>
+        <div class="print-field"><div class="pf-label">Age & Gender / Edad at Kasarian</div><div class="pf-value" id="pp-bage"></div></div>
+        <div class="print-field"><div class="pf-label">Civil Status / Katayuang Sibil</div><div class="pf-value" id="pp-bcivil"></div></div>
+        <div class="print-field"><div class="pf-label">PDL Status</div><div class="pf-value" id="pp-bpdl"></div></div>
+        <div class="print-field"><div class="pf-label">No. of Children / Anak</div><div class="pf-value" id="pp-bchildren"></div></div>
+        <div class="print-field"><div class="pf-label">Referral Source / Pinagmulan</div><div class="pf-value" id="pp-bsource"></div></div>
+        <div class="print-field print-full"><div class="pf-label">Referred By / Nag-refer</div><div class="pf-value" id="pp-breferrer"></div></div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-section-title">Needs Assessment / Pangangailangan</div>
+      <div class="print-grid">
+        <div class="print-field print-full"><div class="pf-label">Type of Need / Uri ng Pangangailangan</div><div class="pf-value" id="pp-bneeds"></div></div>
+        <div class="print-field print-full"><div class="pf-label">Situation / Sitwasyon</div><div class="pf-value" id="pp-bsituation" style="min-height:50px;white-space:pre-line;"></div></div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-section-title">Location & Contact / Lokasyon at Pakikipag-ugnayan</div>
+      <div class="print-grid">
+        <div class="print-field print-full"><div class="pf-label">Address / Address</div><div class="pf-value" id="pp-baddress"></div></div>
+        <div class="print-field"><div class="pf-label">Contact Number / Telepono</div><div class="pf-value" id="pp-bcontact"></div></div>
+        <div class="print-field"><div class="pf-label">Best Time to Visit / Oras ng Pagbisita</div><div class="pf-value" id="pp-bvisit"></div></div>
+        <div class="print-field print-full"><div class="pf-label">Landmark / Directions</div><div class="pf-value" id="pp-blandmark" style="min-height:30px;"></div></div>
+        <div class="print-field print-full"><div class="pf-label">Additional Notes / Karagdagang Tala</div><div class="pf-value" id="pp-bnotes" style="min-height:30px;"></div></div>
+      </div>
+    </div>
+
+    <div class="print-sig-section">
+      <div class="print-section-title">Signatures / Lagda</div>
+      <div class="print-sig-grid">
+        <div>
+          <div class="print-sig-line"></div>
+          <div class="print-sig-label">Person Referred / Applicant<br>Taong Pinag-referral / Aplikante</div>
+        </div>
+        <div>
+          <div class="print-sig-line"></div>
+          <div class="print-sig-label">Referring Person / Officer<br>Nag-refer / Opisyal</div>
+        </div>
+        <div>
+          <div class="print-sig-line"></div>
+          <div class="print-sig-label">Received By — PCLL Staff<br>Natanggap ng Kawani ng PCLL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="print-note">This is an official beneficiary intake record of Ina-Inakay Center Inc. All information is strictly confidential. For inquiries: inainakay.helpdesk@gmail.com · +63975-686-0664 · ina-inakay.com<br>Ang impormasyong ito ay kumpidensyal. Ito ay opisyal na talaan ng Ina-Inakay Center Inc.</div>
+
+    <div class="print-footer-bar">
+      <span>© 2025 Ina-Inakay Center Inc. · 8 Mt. Sajama, Filinvest 1, Batasan Hills, QC · PCLL: Mambog Sula, San Jose, Tarlac</span>
+      <em>crafting pathways. building lives.</em>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+let childRowCount = 0;
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  if (from === totalSteps - 1) populateReview();
+  goToStep(from + 1);
+}
+function prevStep(from) { goToStep(from - 1); }
+
+function goToStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step' + n).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  for (let i = 1; i <= totalSteps; i++) {
+    const c = document.getElementById('pc' + i), l = document.getElementById('pl' + i);
+    if (i < currentStep)  { c.classList.add('done'); c.classList.remove('active'); c.innerHTML = '✓'; l.classList.add('done'); l.classList.remove('active'); }
+    else if (i === currentStep) { c.classList.add('active'); c.classList.remove('done'); c.innerHTML = i; l.classList.add('active'); l.classList.remove('done'); }
+    else { c.classList.remove('active','done'); c.innerHTML = i; l.classList.remove('active','done'); }
+    if (i < totalSteps) { const ln = document.getElementById('ln' + i); if (ln) { i < currentStep ? ln.classList.add('done') : ln.classList.remove('done'); } }
+  }
+}
+
+function validateStep(step) {
+  let valid = true;
+  if (step === 1) {
+    [['bfname','f-bfname'],['blname','f-blname']].forEach(([id,fid]) => {
+      const el = document.getElementById(id), fe = document.getElementById(fid);
+      if (!el.value.trim()) { fe.classList.add('has-error'); valid = false; } else { fe.classList.remove('has-error'); }
+    });
+  }
+  if (step === 2) {
+    const needs = document.querySelectorAll('input[name="needs"]:checked');
+    const ne = document.getElementById('needs-err');
+    if (!needs.length) { ne.style.display = 'block'; valid = false; } else { ne.style.display = 'none'; }
+    const sit = document.getElementById('bsituation'), sitF = document.getElementById('f-bsituation');
+    if (!sit.value.trim()) { sitF.classList.add('has-error'); valid = false; } else { sitF.classList.remove('has-error'); }
+  }
+  if (step === 3) {
+    [['bbarangay','f-bbarangay'],['bmuni','f-bmuni']].forEach(([id,fid]) => {
+      const el = document.getElementById(id), fe = document.getElementById(fid);
+      if (!el.value.trim()) { fe.classList.add('has-error'); valid = false; } else { fe.classList.remove('has-error'); }
+    });
+  }
+  return valid;
+}
+
+function updateChildrenTable(n) {
+  const num = parseInt(n) || 0;
+  const section = document.getElementById('childrenSection');
+  const tbody = document.getElementById('childrenBody');
+  section.style.display = num > 0 ? 'block' : 'none';
+  tbody.innerHTML = '';
+  childRowCount = 0;
+  for (let i = 0; i < num; i++) addChildRow();
+}
+
+function addChildRow() {
+  childRowCount++;
+  const tbody = document.getElementById('childrenBody');
+  const tr = document.createElement('tr');
+  tr.id = 'crow-' + childRowCount;
+  tr.innerHTML = `
+    <td style="font-size:12px;color:var(--ink3);padding:4px 8px;width:28px;">${childRowCount}</td>
+    <td><input type="text" id="cname-${childRowCount}" placeholder="Child name / Pangalan ng bata"></td>
+    <td><input type="number" id="cage-${childRowCount}" min="0" max="30" placeholder="Age" style="width:70px;"></td>
+    <td><input type="text" id="cgrade-${childRowCount}" placeholder="e.g. Grade 3"></td>
+    <td><button type="button" class="btn-rm-row" onclick="removeChildRow(${childRowCount})">×</button></td>
+  `;
+  tbody.appendChild(tr);
+  document.getElementById('childrenSection').style.display = 'block';
+}
+
+function removeChildRow(id) {
+  const row = document.getElementById('crow-' + id);
+  if (row) row.remove();
+}
+
+function getChecked(name) {
+  return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(el => el.value).join('; ') || '—';
+}
+function v(id) { const el = document.getElementById(id); return el ? (el.value.trim() || '—') : '—'; }
+
+function getChildrenSummary() {
+  const rows = document.querySelectorAll('#childrenBody tr');
+  if (!rows.length) return v('bchildcount') === '0' ? 'None / Wala' : '—';
+  return Array.from(rows).map((r, i) => {
+    const n = r.querySelector('input[id^="cname"]')?.value || '—';
+    const a = r.querySelector('input[id^="cage"]')?.value || '—';
+    const g = r.querySelector('input[id^="cgrade"]')?.value || '';
+    return (i+1) + '. ' + n + ', ' + a + ' yrs' + (g ? ', ' + g : '');
+  }).join('\n');
+}
+
+function populateReview() {
+  document.getElementById('rv-bname').textContent      = v('bfname') + ' ' + v('blname');
+  document.getElementById('rv-bage').textContent       = v('bage') + ' yrs, ' + v('bgender');
+  document.getElementById('rv-bpdl').textContent       = v('bpdl');
+  document.getElementById('rv-bchildren').textContent  = v('bchildcount');
+  document.getElementById('rv-breferrer').textContent  = v('breferrer');
+  document.getElementById('rv-bsource').textContent    = v('bsource');
+  document.getElementById('rv-bneeds').textContent     = getChecked('needs');
+  document.getElementById('rv-bsituation').textContent = v('bsituation');
+  document.getElementById('rv-burgency').textContent   = getChecked('urgency') || '—';
+  document.getElementById('rv-baddress').textContent   = v('bbarangay') + ', ' + v('bmuni') + (v('bprovince') !== '—' ? ', ' + v('bprovince') : '');
+  document.getElementById('rv-bcontact').textContent   = v('bcontact') + ' · ' + v('bvisittime');
+  document.getElementById('rv-blandmark').textContent  = v('blandmark');
+}
+
+document.getElementById('bdeclare').addEventListener('change', function() {
+  document.getElementById('submitBtn').disabled = !this.checked;
+});
+
+function genRef() {
+  const y = new Date().getFullYear();
+  const n = String(Math.floor(1000 + Math.random() * 9000));
+  return 'IIC-BEN-' + y + '-' + n;
+}
+
+function submitForm() {
+  const ref = genRef();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+  const urgency = getChecked('urgency') || 'Not specified';
+  const children = getChildrenSummary();
+  const address = v('bbarangay') + ', ' + v('bmuni') + (v('bprovince') !== '—' ? ', ' + v('bprovince') : '') + (v('bregion') !== '—' ? ' (' + v('bregion') + ')' : '');
+
+  document.getElementById('p-ref').textContent      = ref;
+  document.getElementById('p-date').textContent     = dateStr;
+  document.getElementById('p-urgency').textContent  = '🔴 ' + urgency;
+  document.getElementById('pp-bname').textContent   = v('bfname') + ' ' + v('blname');
+  document.getElementById('pp-bage').textContent    = v('bage') + ' years old, ' + v('bgender');
+  document.getElementById('pp-bcivil').textContent  = v('bcivil');
+  document.getElementById('pp-bpdl').textContent    = v('bpdl');
+  document.getElementById('pp-bchildren').textContent = v('bchildcount') + '\n' + children;
+  document.getElementById('pp-bsource').textContent = v('bsource');
+  document.getElementById('pp-breferrer').textContent = v('breferrer');
+  document.getElementById('pp-bneeds').textContent  = getChecked('needs');
+  document.getElementById('pp-bsituation').textContent = v('bsituation');
+  document.getElementById('pp-baddress').textContent = address;
+  document.getElementById('pp-bcontact').textContent = v('bcontact');
+  document.getElementById('pp-bvisit').textContent  = v('bvisittime');
+  document.getElementById('pp-blandmark').textContent = v('blandmark');
+  document.getElementById('pp-bnotes').textContent  = v('bnotes');
+  document.getElementById('refDisplay').textContent = ref;
+
+  const data = {
+    reference: ref, date: dateStr,
+    name: v('bfname') + ' ' + v('blname'), age: v('bage'),
+    gender: v('bgender'), civil: v('bcivil'), pdl: v('bpdl'),
+    children: v('bchildcount'), childrenList: children,
+    source: v('bsource'), referrer: v('breferrer'),
+    needs: getChecked('needs'), situation: v('bsituation'),
+    urgency, address, contact: v('bcontact'),
+    visittime: v('bvisittime'), landmark: v('blandmark'), notes: v('bnotes')
+  };
+
+  if (APPS_SCRIPT_URL) {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ form: 'Beneficiary Intake', ...data })
+    });
+  } else {
+    const body = Object.entries(data).map(([k, v]) => k.toUpperCase() + ': ' + v).join('%0A');
+    window.open('mailto:' + SUBMIT_EMAIL + '?subject=Beneficiary Referral — ' + ref + '&body=' + body, '_blank');
+  }
+
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function printOutput() { window.print(); }
+
+function resetForm() {
+  document.getElementById('successScreen').style.display = 'none';
+  document.getElementById('formCard').style.display = 'block';
+  document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea, select').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+  document.getElementById('bdeclare').checked = false;
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('childrenBody').innerHTML = '';
+  document.getElementById('childrenSection').style.display = 'none';
+  childRowCount = 0;
+  currentStep = 1;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step1').classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <p>© 2025 Ina-Inakay Center Inc. · <a href="https://ina-inakay.com" target="_blank">ina-inakay.com</a></p>
+  <p>8 Mt. Sajama, Filinvest 1, Batasan Hills, Quezon City · PCLL: Mambog Sula, San Jose, Tarlac</p>
+  <p><a href="mailto:inainakay.helpdesk@gmail.com">inainakay.helpdesk@gmail.com</a> · +63975-686-0664</p>
+  <p class="site-footer-tag">crafting pathways. building lives.</p>
+</footer>
+
+</body>
+</html>

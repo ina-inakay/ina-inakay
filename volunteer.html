@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volunteer Form — Ina-Inakay Center Inc.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/*
+  ══════════════════════════════════════════════════════════════
+  CONFIG — Change SUBMIT_EMAIL below to update where form goes.
+  See the <script> section at the bottom for full instructions.
+  ══════════════════════════════════════════════════════════════
+*/
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5EDE0; color: #1C1C1E; line-height: 1.6; padding: 0; margin: 0; }
+
+:root {
+  --navy:    #163659;
+  --navy-m:  #1E4A78;
+  --red:     #C85731;
+  --red-lt:  #F5E8E3;
+  --tan:     #E5C19B;
+  --tan-lt:  #F5EDE0;
+  --white:   #FFFFFF;
+  --ink:     #1C1C1E;
+  --ink2:    #3D3D3F;
+  --ink3:    #6B6B70;
+  --rule:    #DDD8CE;
+  --ok:      #22c55e;
+  --err:     #C85731;
+}
+
+/* ── WRAPPER ── */
+.form-wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 60px; }
+
+/* ── HEADER ── */
+.form-header { text-align: center; margin-bottom: 36px; }
+.form-header-logo { width: 60px; height: 60px; background: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.form-header-logo span { color: #fff; font-size: 22px; font-weight: 700; font-family: 'Playfair Display', serif; }
+.form-title { font-family: 'Playfair Display', serif; font-size: clamp(26px,5vw,36px); font-weight: 400; color: var(--navy); margin-bottom: 8px; }
+.form-title em { font-style: italic; color: var(--red); }
+.form-sub { font-size: 14px; color: var(--ink3); font-weight: 300; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+.form-org { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-bottom: 6px; font-weight: 500; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 36px; gap: 0; }
+.prog-step { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; }
+.prog-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--rule); background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600; color: var(--ink3);
+  transition: all .3s; position: relative; z-index: 1;
+}
+.prog-circle.active  { background: var(--navy); border-color: var(--navy); color: #fff; }
+.prog-circle.done    { background: var(--red); border-color: var(--red); color: #fff; }
+.prog-label { font-size: 10px; color: var(--ink3); letter-spacing: 0.06em; white-space: nowrap; font-weight: 500; transition: color .3s; text-align: center; max-width: 72px; line-height: 1.3; }
+.prog-label.active { color: var(--navy); font-weight: 600; }
+.prog-label.done   { color: var(--red); }
+.prog-line { flex: 1; height: 2px; background: var(--rule); min-width: 20px; max-width: 60px; margin-bottom: 22px; transition: background .3s; }
+.prog-line.done { background: var(--red); }
+
+/* ── CARD ── */
+.form-card { background: var(--white); border-radius: 8px; padding: 36px 40px; box-shadow: 0 2px 20px rgba(22,54,89,0.07); }
+@media (max-width: 600px) { .form-card { padding: 24px 20px; } }
+
+/* ── STEP ── */
+.step { display: none; }
+.step.active { display: block; }
+.step-eyebrow { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--red); font-weight: 600; margin-bottom: 6px; }
+.step-title { font-family: 'Playfair Display', serif; font-size: clamp(20px,4vw,28px); color: var(--navy); margin-bottom: 4px; }
+.step-sub { font-size: 13px; color: var(--ink3); font-weight: 300; margin-bottom: 28px; }
+.step-divider { height: 1px; background: var(--rule); margin: 0 0 28px; }
+
+/* ── FIELDS ── */
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+.field-row.full { grid-template-columns: 1fr; }
+.field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 600px) { .field-row.three { grid-template-columns: 1fr; } }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--ink2); letter-spacing: 0.04em; }
+.field label .fil { font-size: 11px; color: var(--ink3); font-weight: 400; margin-left: 4px; }
+.field label .req { color: var(--red); margin-left: 2px; }
+.field input, .field select, .field textarea {
+  border: 1.5px solid var(--rule); border-radius: 5px;
+  padding: 10px 14px; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink); background: var(--white); outline: none;
+  transition: border-color .2s; width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--navy); }
+.field input.error, .field select.error, .field textarea.error { border-color: var(--err); }
+.field textarea { resize: vertical; min-height: 90px; }
+.field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B70' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.err-msg { font-size: 11px; color: var(--err); display: none; margin-top: 2px; }
+.field.has-error .err-msg { display: block; }
+.field.has-error input, .field.has-error select, .field.has-error textarea { border-color: var(--err); }
+
+/* ── CHECKBOXES ── */
+.check-group { margin-bottom: 8px; }
+.check-group-label { font-size: 12px; font-weight: 600; color: var(--ink2); letter-spacing: 0.04em; margin-bottom: 10px; display: block; }
+.check-group-label .fil { font-size: 11px; color: var(--ink3); font-weight: 400; margin-left: 4px; }
+.check-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+@media (max-width: 600px) { .check-grid { grid-template-columns: repeat(2,1fr); } }
+.check-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.check-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; flex-shrink: 0; }
+.check-item span { font-size: 13px; color: var(--ink2); line-height: 1.3; }
+.check-item span .fil { font-size: 11px; color: var(--ink3); display: block; }
+
+/* ── RADIO GROUP ── */
+.radio-group { display: flex; flex-wrap: wrap; gap: 10px; }
+.radio-item { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.radio-item input[type="radio"] { width: 16px; height: 16px; accent-color: var(--navy); cursor: pointer; }
+.radio-item span { font-size: 13px; color: var(--ink2); }
+
+/* ── MOTIVATION BOX ── */
+.motivation-box { background: var(--tan-lt); border-left: 3px solid var(--tan); border-radius: 0 5px 5px 0; padding: 14px 16px; margin: 16px 0; }
+.motivation-box p { font-size: 12px; color: var(--ink3); font-style: italic; line-height: 1.6; }
+
+/* ── DECLARATION ── */
+.declaration { background: var(--tan-lt); border: 1.5px solid var(--rule); border-radius: 6px; padding: 16px 18px; margin: 20px 0; }
+.declaration label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+.declaration input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--navy); flex-shrink: 0; margin-top: 2px; }
+.declaration span { font-size: 13px; color: var(--ink2); line-height: 1.6; }
+.declaration span strong { color: var(--navy); }
+
+/* ── REVIEW SECTION ── */
+.review-block { margin-bottom: 20px; }
+.review-block h4 { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+@media (max-width: 600px) { .review-grid { grid-template-columns: 1fr; } }
+.review-item .rl { font-size: 11px; color: var(--ink3); font-weight: 500; margin-bottom: 1px; }
+.review-item .rv { font-size: 13px; color: var(--ink); font-weight: 400; }
+
+/* ── NAV BUTTONS ── */
+.btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+.btn-back {
+  background: transparent; color: var(--ink3);
+  border: 1.5px solid var(--rule); padding: 11px 24px;
+  border-radius: 5px; font-size: 13px; font-weight: 500;
+  font-family: inherit; cursor: pointer; transition: all .2s;
+}
+.btn-back:hover { border-color: var(--navy); color: var(--navy); }
+.btn-next {
+  background: var(--navy); color: #fff; border: none;
+  padding: 12px 32px; border-radius: 5px;
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: background .2s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+.btn-next:hover { background: var(--navy-m); }
+.btn-submit {
+  background: var(--red); color: #fff; border: none;
+  padding: 13px 36px; border-radius: 5px;
+  font-size: 14px; font-weight: 600; font-family: inherit;
+  cursor: pointer; transition: background .2s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+.btn-submit:hover { background: #a8461f; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── SUCCESS SCREEN ── */
+.success-screen { display: none; text-align: center; padding: 40px 20px; }
+.success-icon { width: 64px; height: 64px; background: var(--ok); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.success-icon svg { width: 28px; height: 28px; }
+.success-title { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--navy); margin-bottom: 10px; }
+.success-msg { font-size: 14px; color: var(--ink3); max-width: 400px; margin: 0 auto 24px; line-height: 1.75; font-weight: 300; }
+.ref-badge { display: inline-block; background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; padding: 8px 20px; border-radius: 3px; margin-bottom: 28px; font-family: monospace; }
+.btn-print { background: var(--red); color: #fff; border: none; padding: 12px 30px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; border-radius: 5px; margin-right: 10px; transition: background .2s; }
+.btn-print:hover { background: #a8461f; }
+.btn-new { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); padding: 11px 28px; font-size: 14px; font-family: inherit; cursor: pointer; border-radius: 5px; transition: all .2s; }
+.btn-new:hover { background: var(--navy); color: #fff; }
+
+/* ── PRINT LAYOUT ── */
+.printable { display: none; }
+
+@media print {
+  body { background: #fff; padding: 0; }
+  .form-wrap, .form-header, .progress-wrap, .form-card, .step, .btn-row, .success-icon, .success-msg, .ref-badge, .btn-print, .btn-new, .success-screen > * { display: none !important; }
+  .printable { display: block !important; }
+}
+
+.print-doc { font-family: 'Plus Jakarta Sans', sans-serif; max-width: 680px; margin: 0 auto; padding: 32px; color: #1C1C1E; }
+.print-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #163659; }
+.print-logo-block { display: flex; align-items: center; gap: 12px; }
+.print-logo-placeholder { width: 52px; height: 52px; background: #163659; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-family: serif; font-size: 18px; }
+.print-org-name { font-size: 15px; font-weight: 600; color: #163659; }
+.print-org-tag { font-size: 10px; color: #6B6B70; letter-spacing: 0.08em; }
+.print-ref-block { text-align: right; }
+.print-ref-num { font-size: 13px; font-weight: 700; color: #C85731; letter-spacing: 0.06em; font-family: monospace; }
+.print-ref-date { font-size: 11px; color: #6B6B70; margin-top: 2px; }
+.print-title { font-size: 18px; font-weight: 700; color: #163659; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+.print-subtitle { font-size: 11px; color: #6B6B70; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
+.print-section { margin-bottom: 18px; }
+.print-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #C85731; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #DDD8CE; }
+.print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+.print-field .pf-label { font-size: 10px; color: #6B6B70; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.print-field .pf-value { font-size: 13px; color: #1C1C1E; border-bottom: 1px solid #DDD8CE; padding-bottom: 3px; min-height: 22px; }
+.print-full { grid-column: 1 / -1; }
+.print-sig-section { margin-top: 28px; padding-top: 20px; border-top: 1px solid #DDD8CE; }
+.print-sig-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 24px; }
+.print-sig-line { border-bottom: 1.5px solid #1C1C1E; margin-bottom: 5px; height: 28px; }
+.print-sig-label { font-size: 10px; color: #6B6B70; letter-spacing: 0.06em; text-transform: uppercase; }
+.print-note { font-size: 10px; color: #6B6B70; margin-top: 20px; line-height: 1.7; border: 1px solid #DDD8CE; padding: 8px 10px; border-radius: 3px; }
+.print-footer-bar { margin-top: 24px; padding-top: 10px; border-top: 2px solid #163659; display: flex; justify-content: space-between; align-items: center; }
+.print-footer-bar span { font-size: 10px; color: #6B6B70; }
+.print-footer-bar em { color: #C85731; font-style: italic; font-size: 11px; }
+
+/* ── GITHUB PAGES NAV ── */
+.site-nav {
+  background: #163659; height: 60px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 28px; position: sticky; top: 0; z-index: 999;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.site-nav-back {
+  display: flex; align-items: center; gap: 7px; color: rgba(255,255,255,0.55);
+  font-size: 13px; text-decoration: none; transition: color .2s; min-width: 120px;
+}
+.site-nav-back:hover { color: #fff; }
+.site-nav-brand { text-align: center; }
+.site-nav-name { font-size: 13px; font-weight: 600; color: #fff; display: block; }
+.site-nav-tag  { font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 0.1em; text-transform: uppercase; }
+.site-nav-right { min-width: 120px; text-align: right; }
+.site-nav-right a {
+  font-size: 12px; color: rgba(255,255,255,0.45); text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.18); padding: 6px 14px; border-radius: 3px; transition: all .2s;
+}
+.site-nav-right a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.site-footer {
+  background: #0a1628; color: rgba(255,255,255,0.3);
+  text-align: center; padding: 28px 20px; margin-top: 20px;
+}
+.site-footer p { font-size: 12px; margin-bottom: 5px; line-height: 1.7; }
+.site-footer a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color .2s; }
+.site-footer a:hover { color: #fff; }
+.site-footer-tag { font-family: 'Playfair Display',serif; font-style: italic; color: #C85731; opacity: 0.65; font-size: 13px; }
+@media (max-width: 600px) {
+  .site-nav { padding: 0 14px; }
+  .site-nav-back, .site-nav-right { min-width: 80px; }
+  .site-nav-name { font-size: 11px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <a class="site-nav-back" href="https://ina-inakay.com" target="_blank">
+    ← ina-inakay.com
+  </a>
+  <div class="site-nav-brand">
+    <span class="site-nav-name">Ina-Inakay Center Inc.</span>
+    <span class="site-nav-tag">where hope leads</span>
+  </div>
+  <div class="site-nav-right">
+    <a href="https://ina-inakay.com" target="_blank">Main Site</a>
+  </div>
+</nav>
+
+<div class="form-wrap">
+
+  <!-- HEADER -->
+  <div class="form-header">
+    <div class="form-header-logo"><span>II</span></div>
+    <div class="form-org">Ina-Inakay Center Inc.</div>
+    <h1 class="form-title">Volunteer <em>Enrollment</em></h1>
+    <p class="form-sub">Pagiging boluntaryo sa Ina-Inakay ay isang pangako ng pagbabago. Complete all steps to submit your application. / Kumpletuhin ang lahat ng hakbang.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressBar">
+    <div class="prog-step">
+      <div class="prog-circle active" id="pc1">1</div>
+      <div class="prog-label active" id="pl1">Personal Info<br><span style="font-size:9px;font-weight:300;">Impormasyon</span></div>
+    </div>
+    <div class="prog-line" id="ln1"></div>
+    <div class="prog-step">
+      <div class="prog-circle" id="pc2">2</div>
+      <div class="prog-label" id="pl2">Skills<br><span style="font-size:9px;font-weight:300;">Kasanayan</span></div>
+    </div>
+    <div class="prog-line" id="ln2"></div>
+    <div class="prog-step">
+      <div class="prog-circle" id="pc3">3</div>
+      <div class="prog-label" id="pl3">Availability<br><span style="font-size:9px;font-weight:300;">Pagkakaroon</span></div>
+    </div>
+    <div class="prog-line" id="ln3"></div>
+    <div class="prog-step">
+      <div class="prog-circle" id="pc4">4</div>
+      <div class="prog-label" id="pl4">Review<br><span style="font-size:9px;font-weight:300;">Suriin</span></div>
+    </div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="form-card" id="formCard">
+
+    <!-- STEP 1 -->
+    <div class="step active" id="step1">
+      <div class="step-eyebrow">Step 1 of 4</div>
+      <h2 class="step-title">Personal Information</h2>
+      <p class="step-sub">Impormasyon tungkol sa inyong sarili / Your basic personal details</p>
+      <div class="step-divider"></div>
+
+      <div class="field-row">
+        <div class="field" id="f-fname">
+          <label>First Name <span class="fil">(Unang Pangalan)</span><span class="req">*</span></label>
+          <input type="text" id="fname" placeholder="Enter first name">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+        <div class="field" id="f-lname">
+          <label>Last Name <span class="fil">(Apelyido)</span><span class="req">*</span></label>
+          <input type="text" id="lname" placeholder="Enter last name">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field" id="f-email">
+          <label>Email Address <span class="fil">(Email)</span><span class="req">*</span></label>
+          <input type="email" id="email" placeholder="yourname@email.com">
+          <span class="err-msg">Valid email required / Kailangan ng tamang email</span>
+        </div>
+        <div class="field" id="f-mobile">
+          <label>Mobile Number <span class="fil">(Numero ng Telepono)</span><span class="req">*</span></label>
+          <input type="tel" id="mobile" placeholder="+63 9XX XXX XXXX">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field" id="f-city">
+          <label>City / Municipality <span class="fil">(Lungsod)</span><span class="req">*</span></label>
+          <input type="text" id="city" placeholder="e.g. Quezon City">
+          <span class="err-msg">Required / Kinakailangan</span>
+        </div>
+        <div class="field" id="f-province">
+          <label>Province <span class="fil">(Lalawigan)</span></label>
+          <input type="text" id="province" placeholder="e.g. Metro Manila">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Age Range <span class="fil">(Hanay ng Edad)</span></label>
+          <select id="age">
+            <option value="">Select / Pumili</option>
+            <option>18–25</option>
+            <option>26–35</option>
+            <option>36–45</option>
+            <option>46 and above / 46 pataas</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Gender <span class="fil">(Kasarian)</span></label>
+          <select id="gender">
+            <option value="">Select / Pumili</option>
+            <option>Male / Lalaki</option>
+            <option>Female / Babae</option>
+            <option>Prefer not to say / Ayaw sabihin</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <span></span>
+        <button class="btn-next" onclick="nextStep(1)">Next Step / Susunod →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+      <div class="step-eyebrow">Step 2 of 4</div>
+      <h2 class="step-title">Skills & Background</h2>
+      <p class="step-sub">Inyong kasanayan at background / What you bring to the mission</p>
+      <div class="step-divider"></div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Highest Education <span class="fil">(Pinakamataas na Edukasyon)</span></label>
+          <select id="education">
+            <option value="">Select / Pumili</option>
+            <option>Elementary / Elementarya</option>
+            <option>High School / Hayskul</option>
+            <option>Vocational / Bokasyonal</option>
+            <option>Some College / Ilang taon sa kolehiyo</option>
+            <option>College Graduate / Nagtapos ng kolehiyo</option>
+            <option>Post-Graduate / Masterado o Doktorado</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Current Occupation <span class="fil">(Kasalukuyang Trabaho)</span></label>
+          <input type="text" id="occupation" placeholder="e.g. Teacher, Student, Nurse">
+        </div>
+      </div>
+
+      <div class="check-group" style="margin-bottom:20px;">
+        <span class="check-group-label">Skills <span class="fil">(Kasanayan — check all that apply / piliin lahat ng angkop)</span></span>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="skills" value="Teaching / Pagtuturo"><span>Teaching<span class="fil">Pagtuturo</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Medical / Medikal"><span>Medical / Health<span class="fil">Medikal / Kalusugan</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Farming / Pagsasaka"><span>Farming<span class="fil">Pagsasaka</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Crafts / Sining"><span>Crafts / Arts<span class="fil">Sining at Crafts</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Admin Support / Administratibo"><span>Admin Support<span class="fil">Administratibo</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Social Work / Gawaing Panlipunan"><span>Social Work<span class="fil">Gawaing Panlipunan</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="IT / Technical"><span>IT / Technical<span class="fil">IT / Teknikal</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Construction / Konstruksyon"><span>Construction<span class="fil">Konstruksyon</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Counseling / Pagpapayo"><span>Counseling<span class="fil">Pagpapayo</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Cooking / Pagluluto"><span>Cooking<span class="fil">Pagluluto</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Driving / Pagmamaneho"><span>Driving<span class="fil">Pagmamaneho</span></span></label>
+          <label class="check-item"><input type="checkbox" name="skills" value="Other / Iba pa"><span>Other<span class="fil">Iba pa</span></span></label>
+        </div>
+      </div>
+
+      <div class="field-row full">
+        <div class="field">
+          <label>Languages Spoken <span class="fil">(Mga Wikang Naabot)</span></label>
+          <input type="text" id="languages" placeholder="e.g. Filipino, English, Ilocano">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep(2)">← Back / Bumalik</button>
+        <button class="btn-next" onclick="nextStep(2)">Next Step / Susunod →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+      <div class="step-eyebrow">Step 3 of 4</div>
+      <h2 class="step-title">Availability & Preference</h2>
+      <p class="step-sub">Kaagapay ng inyong oras / When and where you can serve</p>
+      <div class="step-divider"></div>
+
+      <div style="margin-bottom:20px;">
+        <span class="check-group-label">Preferred Location <span class="fil">(Gustong Lokasyon)</span><span class="req" style="color:var(--red);margin-left:2px;">*</span></span>
+        <div class="radio-group" id="location-group">
+          <label class="radio-item"><input type="radio" name="location" value="NCR — Quezon City"><span>NCR — Quezon City</span></label>
+          <label class="radio-item"><input type="radio" name="location" value="PCLL — San Jose, Tarlac"><span>PCLL — San Jose, Tarlac</span></label>
+          <label class="radio-item"><input type="radio" name="location" value="Both / Pareho"><span>Both / Pareho</span></label>
+          <label class="radio-item"><input type="radio" name="location" value="Remote / Online only"><span>Remote / Online only</span></label>
+        </div>
+        <span class="err-msg" id="loc-err" style="font-size:11px;color:var(--err);display:none;margin-top:4px;">Please select a location / Pumili ng lokasyon</span>
+      </div>
+
+      <div class="check-group" style="margin-bottom:20px;">
+        <span class="check-group-label">Availability <span class="fil">(Oras na Maaari)</span></span>
+        <div class="radio-group">
+          <label class="radio-item"><input type="checkbox" name="avail" value="Weekdays / Araw ng trabaho"><span>Weekdays<span style="font-size:11px;color:var(--ink3);display:block;">Araw ng trabaho</span></span></label>
+          <label class="radio-item"><input type="checkbox" name="avail" value="Weekends / Katapusan ng linggo"><span>Weekends<span style="font-size:11px;color:var(--ink3);display:block;">Katapusan ng linggo</span></span></label>
+          <label class="radio-item"><input type="checkbox" name="avail" value="Full-time"><span>Full-time</span></label>
+          <label class="radio-item"><input type="checkbox" name="avail" value="Part-time"><span>Part-time</span></label>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Hours per Week <span class="fil">(Oras bawat Linggo)</span></label>
+          <select id="hours">
+            <option value="">Select / Pumili</option>
+            <option>1–5 hours / 1–5 oras</option>
+            <option>5–10 hours / 5–10 oras</option>
+            <option>10–20 hours / 10–20 oras</option>
+            <option>20+ hours / 20+ oras</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Duration <span class="fil">(Tagal ng Serbisyo)</span></label>
+          <select id="duration">
+            <option value="">Select / Pumili</option>
+            <option>One-time / Isang beses</option>
+            <option>1 week / 1 linggo</option>
+            <option>1 month / 1 buwan</option>
+            <option>3 months / 3 buwan</option>
+            <option>6 months / 6 buwan</option>
+            <option>Ongoing / Tuloy-tuloy</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="motivation-box">
+        <p>"What moves you to volunteer with Ina-Inakay? / Ano ang nagudyok sa inyo na boluntaryo dito?"</p>
+      </div>
+      <div class="field-row full" style="margin-top:0;">
+        <div class="field">
+          <textarea id="motivation" placeholder="Share your heart here... / Ibahagi ang inyong puso dito..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep(3)">← Back / Bumalik</button>
+        <button class="btn-next" onclick="nextStep(3)">Review / Suriin →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 — REVIEW -->
+    <div class="step" id="step4">
+      <div class="step-eyebrow">Step 4 of 4</div>
+      <h2 class="step-title">Review Your Application</h2>
+      <p class="step-sub">Suriin ang inyong aplikasyon / Please review before submitting</p>
+      <div class="step-divider"></div>
+
+      <div class="review-block">
+        <h4>Personal Information / Impormasyon</h4>
+        <div class="review-grid">
+          <div class="review-item"><div class="rl">Full Name / Pangalan</div><div class="rv" id="rv-name">—</div></div>
+          <div class="review-item"><div class="rl">Email</div><div class="rv" id="rv-email">—</div></div>
+          <div class="review-item"><div class="rl">Mobile / Telepono</div><div class="rv" id="rv-mobile">—</div></div>
+          <div class="review-item"><div class="rl">Location / Lokasyon</div><div class="rv" id="rv-location">—</div></div>
+          <div class="review-item"><div class="rl">Age Range / Edad</div><div class="rv" id="rv-age">—</div></div>
+          <div class="review-item"><div class="rl">Gender / Kasarian</div><div class="rv" id="rv-gender">—</div></div>
+        </div>
+      </div>
+
+      <div class="review-block">
+        <h4>Skills & Background / Kasanayan</h4>
+        <div class="review-grid">
+          <div class="review-item"><div class="rl">Education / Edukasyon</div><div class="rv" id="rv-edu">—</div></div>
+          <div class="review-item"><div class="rl">Occupation / Trabaho</div><div class="rv" id="rv-occ">—</div></div>
+          <div class="review-item" style="grid-column:1/-1;"><div class="rl">Skills / Kasanayan</div><div class="rv" id="rv-skills">—</div></div>
+          <div class="review-item"><div class="rl">Languages / Wika</div><div class="rv" id="rv-lang">—</div></div>
+        </div>
+      </div>
+
+      <div class="review-block">
+        <h4>Availability / Pagkakaroon</h4>
+        <div class="review-grid">
+          <div class="review-item"><div class="rl">Preferred Site / Lugar</div><div class="rv" id="rv-site">—</div></div>
+          <div class="review-item"><div class="rl">Schedule / Iskedyul</div><div class="rv" id="rv-avail">—</div></div>
+          <div class="review-item"><div class="rl">Hours/week / Oras</div><div class="rv" id="rv-hours">—</div></div>
+          <div class="review-item"><div class="rl">Duration / Tagal</div><div class="rv" id="rv-duration">—</div></div>
+          <div class="review-item" style="grid-column:1/-1;"><div class="rl">Motivation / Dahilan</div><div class="rv" id="rv-motivation">—</div></div>
+        </div>
+      </div>
+
+      <div class="declaration">
+        <label>
+          <input type="checkbox" id="declare">
+          <span>I confirm that all information provided is accurate and truthful. I commit to uphold the core values of <strong>Ina-Inakay Center Inc.</strong> throughout my volunteer service.<br><span style="font-size:12px;color:var(--ink3);margin-top:4px;display:block;">Kinukumpirma ko na lahat ng impormasyon ay tama at totoo. Susundin ko ang mga pangunahing pagpapahalaga ng Ina-Inakay Center Inc.</span></span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep(4)">← Edit / Baguhin</button>
+        <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>Submit Application / Isumite ✓</button>
+      </div>
+    </div>
+
+  </div><!-- /form-card -->
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="successScreen">
+    <div class="form-card" style="text-align:center;padding:48px 32px;">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="success-title">Application Submitted!</h2>
+      <p class="success-msg">Salamat sa inyong pagboluntaryo / Thank you for your interest in volunteering with Ina-Inakay Center Inc. A team member will be in touch within 3–5 working days.</p>
+      <div class="ref-badge" id="refDisplay">IIC-VOL-XXXX-XXXX</div>
+      <div style="margin-bottom:8px;font-size:12px;color:var(--ink3);">Itago ang reference number na ito / Please save this reference number.</div>
+      <br>
+      <button class="btn-print" onclick="printOutput()">🖨 Print Profile / I-print</button>
+      <button class="btn-new" onclick="resetForm()">Submit Another / Bagong Aplikasyon</button>
+    </div>
+  </div>
+
+</div><!-- /form-wrap -->
+
+<!-- PRINTABLE OUTPUT -->
+<div class="printable" id="printOutput">
+  <div class="print-doc">
+    <div class="print-header">
+      <div class="print-logo-block">
+        <div class="print-logo-placeholder">II</div>
+        <div>
+          <div class="print-org-name">Ina-Inakay Center Inc.</div>
+          <div class="print-org-tag">Where Hope Leads &nbsp;·&nbsp; ina-inakay.com</div>
+        </div>
+      </div>
+      <div class="print-ref-block">
+        <div class="print-ref-num" id="p-ref">IIC-VOL-XXXX-XXXX</div>
+        <div class="print-ref-date" id="p-date">—</div>
+      </div>
+    </div>
+
+    <div class="print-title">Volunteer Profile</div>
+    <div class="print-subtitle">Volunteer Enrollment Form &nbsp;·&nbsp; Pormularyo ng Pagboluntaryo</div>
+
+    <div class="print-section">
+      <div class="print-section-title">Personal Information / Impormasyon</div>
+      <div class="print-grid">
+        <div class="print-field"><div class="pf-label">Full Name / Pangalan</div><div class="pf-value" id="pp-name"></div></div>
+        <div class="print-field"><div class="pf-label">Email</div><div class="pf-value" id="pp-email"></div></div>
+        <div class="print-field"><div class="pf-label">Mobile / Telepono</div><div class="pf-value" id="pp-mobile"></div></div>
+        <div class="print-field"><div class="pf-label">City / Province</div><div class="pf-value" id="pp-loc"></div></div>
+        <div class="print-field"><div class="pf-label">Age Range / Edad</div><div class="pf-value" id="pp-age"></div></div>
+        <div class="print-field"><div class="pf-label">Gender / Kasarian</div><div class="pf-value" id="pp-gender"></div></div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-section-title">Skills & Background / Kasanayan</div>
+      <div class="print-grid">
+        <div class="print-field"><div class="pf-label">Education / Edukasyon</div><div class="pf-value" id="pp-edu"></div></div>
+        <div class="print-field"><div class="pf-label">Occupation / Trabaho</div><div class="pf-value" id="pp-occ"></div></div>
+        <div class="print-field print-full"><div class="pf-label">Skills / Kasanayan</div><div class="pf-value" id="pp-skills"></div></div>
+        <div class="print-field"><div class="pf-label">Languages / Wika</div><div class="pf-value" id="pp-lang"></div></div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <div class="print-section-title">Availability / Pagkakaroon</div>
+      <div class="print-grid">
+        <div class="print-field"><div class="pf-label">Preferred Site / Lugar</div><div class="pf-value" id="pp-site"></div></div>
+        <div class="print-field"><div class="pf-label">Schedule / Iskedyul</div><div class="pf-value" id="pp-avail"></div></div>
+        <div class="print-field"><div class="pf-label">Hours/week / Oras</div><div class="pf-value" id="pp-hours"></div></div>
+        <div class="print-field"><div class="pf-label">Duration / Tagal</div><div class="pf-value" id="pp-dur"></div></div>
+        <div class="print-field print-full"><div class="pf-label">Motivation / Dahilan</div><div class="pf-value" id="pp-motive" style="min-height:40px;"></div></div>
+      </div>
+    </div>
+
+    <div class="print-sig-section">
+      <div class="print-section-title">Signatures / Lagda</div>
+      <div class="print-sig-grid">
+        <div>
+          <div class="print-sig-line"></div>
+          <div class="print-sig-label">Volunteer Signature / Lagda ng Boluntaryo</div>
+        </div>
+        <div>
+          <div class="print-sig-line"></div>
+          <div class="print-sig-label">Date Received / Petsa ng Pagtanggap</div>
+        </div>
+        <div>
+          <div class="print-sig-line"></div>
+          <div class="print-sig-label">Authorized Staff / Awtorisadong Kawani</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="print-note">This is an official volunteer enrollment record of Ina-Inakay Center Inc. For inquiries: inainakay.helpdesk@gmail.com · +63975-686-0664 · Ina-inakay.com<br>Ito ay opisyal na talaan ng pagboluntaryo ng Ina-Inakay Center Inc.</div>
+
+    <div class="print-footer-bar">
+      <span>© 2025 Ina-Inakay Center Inc. · 8 Mt. Sajama, Filinvest 1, Batasan Hills, Quezon City</span>
+      <em>crafting pathways. building lives.</em>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   CONFIG — Update this before going live
+   ══════════════════════════════════════════════════════
+   SUBMIT_EMAIL: Change to your actual organizational email.
+   APPS_SCRIPT_URL: Optional. Deploy a Google Apps Script
+   web app and paste the URL here to receive form data by
+   email automatically. If left as '', mailto: is used instead.
+   ══════════════════════════════════════════════════════ */
+const SUBMIT_EMAIL = 'inainakay.helpdesk@gmail.com';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygTl7ESSMcJ1NgglTwX2pn8y77TD8h4Nrl9BxXPHr0bLGHcgKQlpZemInv9uUX_r5gbg/exec';
+
+let currentStep = 1;
+const totalSteps = 4;
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  if (from === totalSteps - 1) populateReview();
+  goToStep(from + 1);
+}
+function prevStep(from) { goToStep(from - 1); }
+
+function goToStep(n) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step' + n).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  for (let i = 1; i <= totalSteps; i++) {
+    const circle = document.getElementById('pc' + i);
+    const label  = document.getElementById('pl' + i);
+    if (i < currentStep)  { circle.classList.add('done'); circle.classList.remove('active'); circle.innerHTML = '✓'; label.classList.add('done'); label.classList.remove('active'); }
+    else if (i === currentStep) { circle.classList.add('active'); circle.classList.remove('done'); circle.innerHTML = i; label.classList.add('active'); label.classList.remove('done'); }
+    else { circle.classList.remove('active','done'); circle.innerHTML = i; label.classList.remove('active','done'); }
+    if (i < totalSteps) { const line = document.getElementById('ln' + i); if (line) { i < currentStep ? line.classList.add('done') : line.classList.remove('done'); } }
+  }
+}
+
+function validateStep(step) {
+  let valid = true;
+  if (step === 1) {
+    [['fname','f-fname'],['lname','f-lname'],['city','f-city']].forEach(([id, fid]) => {
+      const el = document.getElementById(id); const fe = document.getElementById(fid);
+      if (!el.value.trim()) { fe.classList.add('has-error'); valid = false; } else { fe.classList.remove('has-error'); }
+    });
+    const emailEl = document.getElementById('email'); const emailFe = document.getElementById('f-email');
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+    if (!emailOk) { emailFe.classList.add('has-error'); valid = false; } else { emailFe.classList.remove('has-error'); }
+    const mobEl = document.getElementById('mobile'); const mobFe = document.getElementById('f-mobile');
+    if (!mobEl.value.trim()) { mobFe.classList.add('has-error'); valid = false; } else { mobFe.classList.remove('has-error'); }
+  }
+  if (step === 3) {
+    const locs = document.querySelectorAll('input[name="location"]:checked');
+    const locErr = document.getElementById('loc-err');
+    if (!locs.length) { locErr.style.display = 'block'; valid = false; } else { locErr.style.display = 'none'; }
+  }
+  if (!valid) { const firstErr = document.querySelector('.has-error input, .has-error select'); if (firstErr) firstErr.focus(); }
+  return valid;
+}
+
+function getChecked(name) {
+  return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(el => el.value).join(', ') || '—';
+}
+function v(id) { const el = document.getElementById(id); return el ? (el.value.trim() || '—') : '—'; }
+
+function populateReview() {
+  document.getElementById('rv-name').textContent    = v('fname') + ' ' + v('lname');
+  document.getElementById('rv-email').textContent   = v('email');
+  document.getElementById('rv-mobile').textContent  = v('mobile');
+  document.getElementById('rv-location').textContent = v('city') + (v('province') !== '—' ? ', ' + v('province') : '');
+  document.getElementById('rv-age').textContent     = v('age');
+  document.getElementById('rv-gender').textContent  = v('gender');
+  document.getElementById('rv-edu').textContent     = v('education');
+  document.getElementById('rv-occ').textContent     = v('occupation') || '—';
+  document.getElementById('rv-skills').textContent  = getChecked('skills');
+  document.getElementById('rv-lang').textContent    = v('languages') || '—';
+  document.getElementById('rv-site').textContent    = getChecked('location');
+  document.getElementById('rv-avail').textContent   = getChecked('avail');
+  document.getElementById('rv-hours').textContent   = v('hours');
+  document.getElementById('rv-duration').textContent = v('duration');
+  document.getElementById('rv-motivation').textContent = v('motivation');
+}
+
+document.getElementById('declare').addEventListener('change', function() {
+  document.getElementById('submitBtn').disabled = !this.checked;
+});
+
+function genRef() {
+  const y = new Date().getFullYear();
+  const n = String(Math.floor(1000 + Math.random() * 9000));
+  return 'IIC-VOL-' + y + '-' + n;
+}
+
+function submitForm() {
+  const ref = genRef();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+
+  const data = {
+    reference: ref, date: dateStr,
+    name: v('fname') + ' ' + v('lname'), email: v('email'),
+    mobile: v('mobile'), city: v('city'), province: v('province'),
+    age: v('age'), gender: v('gender'), education: v('education'),
+    occupation: v('occupation'), skills: getChecked('skills'),
+    languages: v('languages'), site: getChecked('location'),
+    availability: getChecked('avail'), hours: v('hours'),
+    duration: v('duration'), motivation: v('motivation')
+  };
+
+  // Populate print output
+  document.getElementById('p-ref').textContent   = ref;
+  document.getElementById('p-date').textContent  = dateStr;
+  document.getElementById('pp-name').textContent = data.name;
+  document.getElementById('pp-email').textContent = data.email;
+  document.getElementById('pp-mobile').textContent = data.mobile;
+  document.getElementById('pp-loc').textContent  = data.city + (data.province !== '—' ? ', ' + data.province : '');
+  document.getElementById('pp-age').textContent  = data.age;
+  document.getElementById('pp-gender').textContent = data.gender;
+  document.getElementById('pp-edu').textContent  = data.education;
+  document.getElementById('pp-occ').textContent  = data.occupation;
+  document.getElementById('pp-skills').textContent = data.skills;
+  document.getElementById('pp-lang').textContent = data.languages;
+  document.getElementById('pp-site').textContent = data.site;
+  document.getElementById('pp-avail').textContent = data.availability;
+  document.getElementById('pp-hours').textContent = data.hours;
+  document.getElementById('pp-dur').textContent  = data.duration;
+  document.getElementById('pp-motive').textContent = data.motivation;
+  document.getElementById('refDisplay').textContent = ref;
+
+  if (APPS_SCRIPT_URL) {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ form: 'Volunteer Enrollment', ...data })
+    });
+  } else {
+    const body = Object.entries(data).map(([k,v]) => k.toUpperCase() + ': ' + v).join('%0A');
+    window.open('mailto:' + SUBMIT_EMAIL + '?subject=Volunteer Application — ' + ref + '&body=' + body, '_blank');
+  }
+
+  document.getElementById('formCard').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function printOutput() { window.print(); }
+
+function resetForm() {
+  document.getElementById('successScreen').style.display = 'none';
+  document.getElementById('formCard').style.display = 'block';
+  document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea, select').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+  document.getElementById('declare').checked = false;
+  document.getElementById('submitBtn').disabled = true;
+  currentStep = 1;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step1').classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <p>© 2025 Ina-Inakay Center Inc. · <a href="https://ina-inakay.com" target="_blank">ina-inakay.com</a></p>
+  <p>8 Mt. Sajama, Filinvest 1, Batasan Hills, Quezon City · PCLL: Mambog Sula, San Jose, Tarlac</p>
+  <p><a href="mailto:inainakay.helpdesk@gmail.com">inainakay.helpdesk@gmail.com</a> · +63975-686-0664</p>
+  <p class="site-footer-tag">crafting pathways. building lives.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Assistance — Ina-Inakay Center Inc.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F5EDE0; color: #1C1C1E; line-height: 1.6; margin: 0; }
+
+:root {
+  --navy:   #163659;
+  --navy-m: #1E4A78;
+  --red:    #C85731;
+  --red-lt: #F5E8E3;
+  --tan:    #E5C19B;
+  --tan-lt: #F5EDE0;
+  --white:  #FFFFFF;
+  --ink:    #1C1C1E;
+  --ink3:   #6B6B70;
+  --rule:   #DDD8CE;
+}
+
+/* ── SITE NAV ── */
+.site-nav {
+  background: var(--navy); height: 60px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 28px;
+  position: sticky; top: 0; z-index: 999;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.site-nav-back {
+  display: flex; align-items: center; gap: 7px;
+  color: rgba(255,255,255,0.55); font-size: 13px;
+  text-decoration: none; transition: color .2s; min-width: 120px;
+}
+.site-nav-back:hover { color: #fff; }
+.site-nav-brand { text-align: center; }
+.site-nav-name { font-size: 13px; font-weight: 600; color: #fff; display: block; }
+.site-nav-tag  { font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 0.1em; text-transform: uppercase; }
+.site-nav-right { min-width: 120px; text-align: right; }
+.site-nav-right a {
+  font-size: 12px; color: rgba(255,255,255,0.45); text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 3px; transition: all .2s;
+}
+.site-nav-right a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+@media (max-width: 600px) {
+  .site-nav { padding: 0 14px; }
+  .site-nav-back, .site-nav-right { min-width: 70px; }
+  .site-nav-name { font-size: 11px; }
+}
+
+/* ── BANNER ── */
+.banner {
+  background: var(--navy); padding: 64px 0 52px;
+  position: relative; overflow: hidden;
+}
+.banner::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.banner::after {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 40%;
+  background: linear-gradient(to right, transparent, rgba(200,87,49,0.04));
+}
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+.banner-eye {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 10px; position: relative; z-index: 1;
+}
+.banner-h {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px,5vw,52px); font-weight: 400; color: #fff;
+  line-height: 1.05; margin-bottom: 14px; position: relative; z-index: 1;
+}
+.banner-h em { font-style: italic; color: var(--red); }
+.banner-sub {
+  font-size: 15px; color: rgba(255,255,255,0.4);
+  max-width: 480px; line-height: 1.75; font-weight: 300;
+  position: relative; z-index: 1;
+}
+
+/* ── AGENT SECTION ── */
+.agents-section { padding: 48px 0 24px; }
+
+/* Agent Tab Buttons */
+.agent-tabs { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
+.agent-tab {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 22px; border: 1.5px solid var(--rule);
+  border-radius: 6px; cursor: pointer; background: var(--white);
+  transition: all .2s; user-select: none;
+}
+.agent-tab:hover { border-color: var(--navy); }
+.agent-tab.active { background: var(--navy); border-color: var(--navy); }
+.atab-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); flex-shrink: 0; transition: background .2s;
+}
+.agent-tab.active .atab-dot { background: #6bcb77; }
+.atab-name {
+  font-size: 13px; font-weight: 600; color: var(--ink); transition: color .2s;
+}
+.agent-tab.active .atab-name { color: #fff; }
+.atab-desc { font-size: 11px; color: var(--ink3); transition: color .2s; }
+.agent-tab.active .atab-desc { color: rgba(255,255,255,0.5); }
+
+/* Agent Panels */
+.agent-panel { display: none; }
+.agent-panel.active { display: block; }
+
+/* Chatbase iframe container */
+.chatbase-container {
+  width: 100%; height: 600px;
+  border-radius: 8px; overflow: hidden;
+  box-shadow: 0 2px 20px rgba(22,54,89,0.1);
+  background: var(--white);
+  position: relative;
+}
+@media (max-width: 768px) { .chatbase-container { height: 520px; } }
+@media (max-width: 480px) { .chatbase-container { height: 460px; } }
+
+.chatbase-container iframe {
+  width: 100%; height: 100%; border: none; display: block;
+}
+
+/* Placeholder shown before Chatbase is configured */
+.chatbase-placeholder {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; padding: 40px; text-align: center;
+  background: var(--white);
+}
+.placeholder-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--tan-lt); border: 2px solid var(--tan);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.placeholder-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--navy); font-weight: 400;
+}
+.placeholder-msg {
+  font-size: 14px; color: var(--ink3); max-width: 360px;
+  line-height: 1.7; font-weight: 300;
+}
+.placeholder-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--red-lt); border: 1px solid rgba(200,87,49,0.25);
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 11px; color: var(--red); font-weight: 500;
+}
+
+/* Info cards */
+.info-strip {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 16px; margin-top: 40px; padding-bottom: 52px;
+}
+@media (max-width: 768px) { .info-strip { grid-template-columns: 1fr; } }
+.info-card {
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 24px;
+}
+.info-card-eye {
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 8px;
+}
+.info-card-title {
+  font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 8px;
+}
+.info-card-text {
+  font-size: 13px; color: var(--ink3); line-height: 1.75; font-weight: 300;
+}
+.info-card-link {
+  display: inline-block; margin-top: 14px; font-size: 12px;
+  color: var(--navy); font-weight: 600; text-decoration: none;
+  border-bottom: 1px solid var(--rule); padding-bottom: 1px;
+  transition: border-color .2s;
+}
+.info-card-link:hover { border-color: var(--red); color: var(--red); }
+
+/* ── FOOTER ── */
+.site-footer {
+  background: #0a1628; color: rgba(255,255,255,0.3);
+  text-align: center; padding: 28px 20px;
+}
+.site-footer p { font-size: 12px; margin-bottom: 5px; line-height: 1.7; }
+.site-footer a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color .2s; }
+.site-footer a:hover { color: #fff; }
+.site-footer-tag {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  color: #C85731; opacity: 0.65; font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+<!-- SITE NAV -->
+<nav class="site-nav">
+  <a class="site-nav-back" href="https://ina-inakay.com" target="_blank">
+    ← ina-inakay.com
+  </a>
+  <div class="site-nav-brand">
+    <span class="site-nav-name">Ina-Inakay Center Inc.</span>
+    <span class="site-nav-tag">where hope leads</span>
+  </div>
+  <div class="site-nav-right">
+    <a href="https://ina-inakay.com" target="_blank">Main Site</a>
+  </div>
+</nav>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="wrap">
+    <div class="banner-eye">AI-Powered Assistance</div>
+    <h1 class="banner-h">Ask. Get Answers.<br><em>Connect.</em></h1>
+    <p class="banner-sub">Three intelligent agents ready to help — no waiting, no phone tag. Ask about our programs, volunteering, or partnership.</p>
+  </div>
+</div>
+
+<!-- AGENTS -->
+<div class="agents-section">
+  <div class="wrap">
+
+    <!-- TABS -->
+    <div class="agent-tabs">
+      <div class="agent-tab active" onclick="switchAgent('ask')">
+        <div class="atab-dot"></div>
+        <div>
+          <div class="atab-name">Ask Inakay</div>
+          <div class="atab-desc">Foundation info &amp; programs</div>
+        </div>
+      </div>
+      <div class="agent-tab" onclick="switchAgent('volunteer')">
+        <div class="atab-dot"></div>
+        <div>
+          <div class="atab-name">Volunteer Hub</div>
+          <div class="atab-desc">How to volunteer</div>
+        </div>
+      </div>
+      <div class="agent-tab" onclick="switchAgent('partner')">
+        <div class="atab-dot"></div>
+        <div>
+          <div class="atab-name">Partner Desk</div>
+          <div class="atab-desc">Partnership &amp; collaboration</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         AGENT 1 — ASK INAKAY
+         REPLACE the placeholder div with your Chatbase
+         iframe embed code when ready.
+         ══════════════════════════════════════════════════════ -->
+    <div class="agent-panel active" id="panel-ask">
+      <div class="chatbase-container">
+
+        <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+             REPLACE THIS ENTIRE DIV with Chatbase code
+             Example:
+             <iframe
+               src="https://www.chatbase.co/chatbot-iframe/YOUR_CHATBOT_ID_HERE"
+               width="100%" height="100%"
+               style="border:none;">
+             </iframe>
+             ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+        <div class="chatbase-placeholder">
+          <div class="placeholder-icon">🕊</div>
+          <div class="placeholder-title">Ask Inakay</div>
+          <p class="placeholder-msg">
+            This agent answers general questions about Ina-Inakay Center Inc. —
+            our history, programs, locations, and how we serve communities
+            across Metro Manila and Tarlac.
+          </p>
+          <div class="placeholder-badge">⏳ Agent being configured — coming soon</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         AGENT 2 — VOLUNTEER HUB
+         ══════════════════════════════════════════════════════ -->
+    <div class="agent-panel" id="panel-volunteer">
+      <div class="chatbase-container">
+
+        <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+             REPLACE THIS ENTIRE DIV with Chatbase code
+             ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+        <div class="chatbase-placeholder">
+          <div class="placeholder-icon">🤝</div>
+          <div class="placeholder-title">Volunteer Hub</div>
+          <p class="placeholder-msg">
+            This agent walks you through everything about volunteering —
+            what roles are available, how to apply, what to expect,
+            and how to get started with Ina-Inakay.
+          </p>
+          <div class="placeholder-badge">⏳ Agent being configured — coming soon</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         AGENT 3 — PARTNER DESK
+         ══════════════════════════════════════════════════════ -->
+    <div class="agent-panel" id="panel-partner">
+      <div class="chatbase-container">
+
+        <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+             REPLACE THIS ENTIRE DIV with Chatbase code
+             ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+        <div class="chatbase-placeholder">
+          <div class="placeholder-icon">🤲</div>
+          <div class="placeholder-title">Partner Desk</div>
+          <p class="placeholder-msg">
+            This agent helps organizations, churches, and individuals
+            explore partnership with Ina-Inakay — financial support,
+            in-kind donations, missions, and program collaboration.
+          </p>
+          <div class="placeholder-badge">⏳ Agent being configured — coming soon</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- INFO CARDS -->
+    <div class="info-strip">
+      <div class="info-card">
+        <div class="info-card-eye">Need direct contact?</div>
+        <div class="info-card-title">Reach the Team</div>
+        <p class="info-card-text">
+          For urgent matters, email us at
+          <strong>inainakay.helpdesk@gmail.com</strong>
+          or call <strong>+63975-686-0664</strong>.
+          We respond within 3–5 working days.
+        </p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-eye">Ready to serve?</div>
+        <div class="info-card-title">Volunteer Application</div>
+        <p class="info-card-text">
+          Talked to the Volunteer Hub and ready to apply?
+          Submit your formal enrollment through our online form.
+        </p>
+        <a class="info-card-link" href="volunteer.html">
+          Go to Volunteer Form →
+        </a>
+      </div>
+      <div class="info-card">
+        <div class="info-card-eye">Referring someone in need?</div>
+        <div class="info-card-title">Beneficiary Referral</div>
+        <p class="info-card-text">
+          Barangay officers, social workers, and community leaders
+          can submit a beneficiary referral using our intake tool.
+        </p>
+        <a class="info-card-link" href="beneficiary.html">
+          Go to Intake Tool →
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <p>© 2025 Ina-Inakay Center Inc. · <a href="https://ina-inakay.com" target="_blank">ina-inakay.com</a></p>
+  <p>8 Mt. Sajama, Filinvest 1, Batasan Hills, Quezon City · PCLL: Mambog Sula, San Jose, Tarlac</p>
+  <p><a href="mailto:inainakay.helpdesk@gmail.com">inainakay.helpdesk@gmail.com</a> · +63975-686-0664</p>
+  <p class="site-footer-tag">crafting pathways. building lives.</p>
+</footer>
+
+<script>
+function switchAgent(id) {
+  document.querySelectorAll('.agent-tab').forEach(function(t) {
+    t.classList.remove('active');
+  });
+  document.querySelectorAll('.agent-panel').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  var ids = ['ask','volunteer','partner'];
+  var tabs = document.querySelectorAll('.agent-tab');
+  var idx = ids.indexOf(id);
+  if (tabs[idx]) tabs[idx].classList.add('active');
+  var panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+}
+</script>
+</body>
+</html>
